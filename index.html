@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Special Surprise for You</title>
-    <img src="love-always-wins.png" alt="A special memory" class="w-full h-auto rounded-lg shadow-lg">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
@@ -22,7 +21,12 @@
 
     <!-- Gift Section -->
     <div id="gift-section" class="flex flex-col items-center z-10 transition-all duration-500">
-        <h1 class="text-3xl md:text-5xl font-bold text-rose-500 mb-8 tracking-tight animate-pop">A Little Surprise...</h1>
+        <!-- IMAGE BESIDE TITLE -->
+        <div class="flex items-center gap-4 mb-8">
+            <img src="love-always-wins.png" alt="Memory" class="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover">
+            <h1 class="text-3xl md:text-5xl font-bold text-rose-500 tracking-tight animate-pop">A Little Surprise...</h1>
+        </div>
+
         <div id="gift" class="box-container cursor-pointer w-48 h-48 relative" onclick="openGift()">
             <div class="lid absolute w-full h-12 bg-rose-400 rounded-t-lg z-20 border-b-4 border-rose-600 shadow-lg"></div>
             <div class="absolute bottom-0 w-full h-36 bg-rose-500 rounded-b-lg border-t-4 border-rose-600 shadow-2xl flex items-center justify-center">
@@ -46,7 +50,6 @@
     <div id="gallery-screen" class="hidden w-full max-w-4xl p-6 animate-pop z-10">
         <h2 class="text-3xl font-bold text-rose-500 text-center mb-8">Some of my favorite moments</h2>
         <div id="photo-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <!-- Photos will be injected here -->
         </div>
         <div class="mt-10 text-center">
             <button onclick="location.reload()" class="px-6 py-2 bg-rose-200 text-rose-700 rounded-full hover:bg-rose-300 transition">Start Over</button>
@@ -54,24 +57,13 @@
     </div>
 
     <script>
+        const imageUrls = ["image_5b753f.jpg", "image_5b6e15.png", "image_5b66d7.jpg"];
+        
         const canvas = document.getElementById('confetti');
         const ctx = canvas.getContext('2d');
         let particles = [];
-
-        // REPLACE THESE URLS WITH YOUR ACTUAL PHOTO LINKS
-        const imageUrls = [
-            "https://placehold.co/400x400/fda4af/white?text=Memory+1",
-            "https://placehold.co/400x400/fecdd3/white?text=Memory+2",
-            "https://placehold.co/400x400/fda4af/white?text=Memory+3",
-            "https://placehold.co/400x400/fecdd3/white?text=Memory+4",
-            "https://placehold.co/400x400/fda4af/white?text=Memory+5",
-            "https://placehold.co/400x400/fecdd3/white?text=Memory+6"
-        ];
-
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.onresize = resize;
-        resize();
-
+        window.onresize = resize; resize();
         function openGift() {
             document.getElementById('gift').classList.add('open');
             setTimeout(() => {
@@ -80,41 +72,28 @@
                 triggerConfetti();
             }, 600);
         }
-
         function showGallery() {
             document.getElementById('message-screen').classList.add('hidden');
             const gallery = document.getElementById('gallery-screen');
             const grid = document.getElementById('photo-grid');
-            
             imageUrls.forEach(url => {
                 const img = document.createElement('img');
                 img.src = url;
                 img.className = "w-full h-64 object-cover rounded-2xl shadow-md hover:scale-105 transition duration-300";
                 grid.appendChild(img);
             });
-            
             gallery.classList.remove('hidden');
         }
-
         function triggerConfetti() {
             for(let i = 0; i < 150; i++) {
-                particles.push({
-                    x: Math.random() * window.innerWidth,
-                    y: Math.random() * window.innerHeight - window.innerHeight,
-                    color: ['#f43f5e', '#fda4af', '#fff'][Math.floor(Math.random() * 3)],
-                    size: Math.random() * 8 + 2,
-                    speed: Math.random() * 5 + 2
-                });
+                particles.push({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight - window.innerHeight, color: ['#f43f5e', '#fda4af', '#fff'][Math.floor(Math.random() * 3)], size: Math.random() * 8 + 2, speed: Math.random() * 5 + 2 });
             }
             animateConfetti();
         }
-
-        function animateConfetti() {
+        function animateEffetti() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach((p, index) => {
-                ctx.fillStyle = p.color;
-                ctx.fillRect(p.x, p.y, p.size, p.size);
-                p.y += p.speed;
+                ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.size, p.size); p.y += p.speed;
                 if(p.y > window.innerHeight) particles.splice(index, 1);
             });
             if(particles.length > 0) requestAnimationFrame(animateConfetti);
