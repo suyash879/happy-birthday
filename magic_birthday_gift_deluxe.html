@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Surprise for You</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .animate-pop { animation: pop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        .box-container { transition: transform 0.3s ease; }
+        .box-container:hover { transform: translateY(-10px); }
+        .lid { transition: transform 0.6s ease; transform-origin: bottom; }
+        .open .lid { transform: translateY(-100px) rotate(-10deg); }
+        body { background-color: #fff1f2; } 
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 font-sans overflow-x-hidden">
+
+    <canvas id="confetti" class="absolute inset-0 pointer-events-none z-50"></canvas>
+
+    <!-- Gift Section -->
+    <div id="gift-section" class="flex flex-col items-center z-10 transition-all duration-500">
+        <h1 class="text-3xl md:text-5xl font-bold text-rose-500 mb-8 tracking-tight animate-pop">A Little Surprise...</h1>
+        <div id="gift" class="box-container cursor-pointer w-48 h-48 relative" onclick="openGift()">
+            <div class="lid absolute w-full h-12 bg-rose-400 rounded-t-lg z-20 border-b-4 border-rose-600 shadow-lg"></div>
+            <div class="absolute bottom-0 w-full h-36 bg-rose-500 rounded-b-lg border-t-4 border-rose-600 shadow-2xl flex items-center justify-center">
+                <div class="w-8 h-full bg-white opacity-20"></div>
+            </div>
+        </div>
+        <p class="mt-6 text-rose-400 animate-pulse font-medium">Click the gift to open it</p>
+    </div>
+
+    <div id="message-screen" class="hidden flex flex-col items-center p-8 bg-white rounded-3xl shadow-xl border border-rose-100 max-w-sm text-center animate-pop z-10">
+        <div class="text-6xl mb-4">✨</div>
+        <h2 class="text-2xl font-bold text-rose-600 mb-2">Happy Birthday!</h2>
+        <p class="text-gray-600 italic mb-6">
+            "You make the world a little brighter just by being you. Wishing you a day as wonderful as your spirit!"
+        </p>
+        <button onclick="showGallery()" class="px-6 py-3 bg-rose-500 text-white rounded-full hover:bg-rose-600 transition shadow-lg w-full">
+            See the Memories ✨
+        </button>
+    </div>
+
+    <div id="gallery-screen" class="hidden w-full max-w-4xl p-6 animate-pop z-10">
+        <h2 class="text-3xl font-bold text-rose-500 text-center mb-8">Some of my favorite moments</h2>
+        <div id="photo-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <!-- Photos will be injected here -->
+        </div>
+        <div class="mt-10 text-center">
+            <button onclick="location.reload()" class="px-6 py-2 bg-rose-200 text-rose-700 rounded-full hover:bg-rose-300 transition">Start Over</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('confetti');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        // REPLACE THESE URLS WITH YOUR ACTUAL PHOTO LINKS
+        const imageUrls = [
+            "https://placehold.co/400x400/fda4af/white?text=Memory+1",
+            "https://placehold.co/400x400/fecdd3/white?text=Memory+2",
+            "https://placehold.co/400x400/fda4af/white?text=Memory+3",
+            "https://placehold.co/400x400/fecdd3/white?text=Memory+4",
+            "https://placehold.co/400x400/fda4af/white?text=Memory+5",
+            "https://placehold.co/400x400/fecdd3/white?text=Memory+6"
+        ];
+
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.onresize = resize;
+        resize();
+
+        function openGift() {
+            document.getElementById('gift').classList.add('open');
+            setTimeout(() => {
+                document.getElementById('gift-section').classList.add('hidden');
+                document.getElementById('message-screen').classList.remove('hidden');
+                triggerConfetti();
+            }, 600);
+        }
+
+        function showGallery() {
+            document.getElementById('message-screen').classList.add('hidden');
+            const gallery = document.getElementById('gallery-screen');
+            const grid = document.getElementById('photo-grid');
+            
+            imageUrls.forEach(url => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.className = "w-full h-64 object-cover rounded-2xl shadow-md hover:scale-105 transition duration-300";
+                grid.appendChild(img);
+            });
+            
+            gallery.classList.remove('hidden');
+        }
+
+        function triggerConfetti() {
+            for(let i = 0; i < 150; i++) {
+                particles.push({
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * window.innerHeight - window.innerHeight,
+                    color: ['#f43f5e', '#fda4af', '#fff'][Math.floor(Math.random() * 3)],
+                    size: Math.random() * 8 + 2,
+                    speed: Math.random() * 5 + 2
+                });
+            }
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, index) => {
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, p.size, p.size);
+                p.y += p.speed;
+                if(p.y > window.innerHeight) particles.splice(index, 1);
+            });
+            if(particles.length > 0) requestAnimationFrame(animateConfetti);
+        }
+    </script>
+</body>
+</html>
