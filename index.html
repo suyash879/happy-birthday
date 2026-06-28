@@ -50,23 +50,22 @@
 
     <div id="gallery-screen" class="hidden w-full max-w-4xl p-6 animate-pop z-10">
         <h2 class="text-3xl font-bold text-rose-500 text-center mb-8">Some of my favorite moments</h2>
+        <div id="photo-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        </div>
         <div class="mt-10 text-center">
             <button onclick="location.reload()" class="px-6 py-2 bg-rose-200 text-rose-700 rounded-full hover:bg-rose-300 transition">Start Over</button>
-        </div>
-        <div id="photo-grid" class="grid grid-cols-1 gap-6">
-            
         </div>
     </div>
 
     <script>
-        const imageUrls = ["IMG20251017104133.jpg", "IMG-20260314-WA0020.jpg"];
+        const imageUrls = ["IMG20251017104133.jpg", "image_5b6e15.png", "image_5b66d7.jpg"];
         
         const canvas = document.getElementById('confetti');
         const ctx = canvas.getContext('2d');
         let particles = [];
         function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-window.onresize = resize;
-resize();
+        window.onresize = resize; resize();
+        function openGift() {
             document.getElementById('gift').classList.add('open');
             setTimeout(() => {
                 document.getElementById('gift-section').classList.add('hidden');
@@ -75,20 +74,15 @@ resize();
             }, 600);
         }
         function showGallery() {
-    document.getElementById('message-screen').classList.add('hidden');
-
-    const gallery = document.getElementById('gallery-screen');
-    const grid = document.getElementById('photo-grid');
-
-    grid.innerHTML = "";
-
-    imageUrls.forEach(url => {
-        const img = document.createElement('img');
-        img.src = url;
-        img.className = "w-full h-auto max-h-[80vh] object-contain rounded-2xl shadow-lg bg-white hover:scale-105 transition duration-300";
-        grid.appendChild(img);
-    });
-            
+            document.getElementById('message-screen').classList.add('hidden');
+            const gallery = document.getElementById('gallery-screen');
+            const grid = document.getElementById('photo-grid');
+            imageUrls.forEach(url => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.className = "w-full h-64 object-cover rounded-2xl shadow-md hover:scale-105 transition duration-300";
+                grid.appendChild(img);
+            });
             gallery.classList.remove('hidden');
         }
         function triggerConfetti() {
@@ -97,7 +91,7 @@ resize();
             }
             animateConfetti();
         }
-        function animateConfetti() {
+        function animateEffetti() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach((p, index) => {
                 ctx.fillStyle = p.color; ctx.fillRect(p.x, p.y, p.size, p.size); p.y += p.speed;
